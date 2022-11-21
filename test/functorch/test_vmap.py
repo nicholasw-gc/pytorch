@@ -3294,8 +3294,10 @@ class TestVmapOperatorsOpInfo(TestCase):
     ))
     @toleranceOverride({torch.float32: tol(atol=1e-04, rtol=1e-04)})
     @skipOps('TestVmapOperatorsOpInfo', 'test_vmap_exhaustive', vmap_fail.union({
+        # RuntimeError: Batch norm got a batched tensor as input while the running_mean or running_var,
+        # which will be updated in place, were not batched.
         xfail('native_batch_norm'),
-        xfail('native_batch_norm_legit'),  # RuntimeError: Batch norm got a batched tensor as input while the running_mean or running_var, which will be updated in place, were not batched.
+        xfail('native_batch_norm_legit'),
         # The error inputs are vectors, that pass when batched as they are treated as a matrix
         xfail('trace'),
     }))
@@ -3316,7 +3318,7 @@ class TestVmapOperatorsOpInfo(TestCase):
         skip('to'),  # RuntimeError: required rank 4 tensor to use channels_last format
         xfail('complex'),
         xfail('copysign'),
-        # Batch norm got a batched tensor as input while the running_mean or running_var, 
+        # Batch norm got a batched tensor as input while the running_mean or running_var,
         # which will be updated in place, were not batched.
         xfail('native_batch_norm'),
         xfail('native_batch_norm_legit'),

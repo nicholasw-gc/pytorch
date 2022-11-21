@@ -3328,6 +3328,17 @@ class CommonTemplate:
             ],
         )
 
+    def test_isinf2(self):
+        def fn(x):
+            y = torch.tensor(
+                [1, float("inf"), 2, float("-inf"), float("nan")], device=self.device
+            )
+            return x == y
+
+        self.common(
+            fn, (torch.tensor([1, float("inf"), 2, float("-inf"), float("nan")]),)
+        )
+
     def test_any(self):
         def fn(x):
             return (
@@ -4836,7 +4847,6 @@ if HAS_CPU:
                 compiled = compile_fx_inner(traced, ([x1, x2]))
                 assert same(fn(x1, x2)[0], compiled([x1, x2])[0], equal_nan=True)
                 assert metrics.generated_cpp_vec_kernel_count == 1
-
 
 if HAS_CUDA:
     import triton
